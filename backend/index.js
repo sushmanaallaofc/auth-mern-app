@@ -11,7 +11,7 @@ require('./Models/database');
 const PORT = process.env.PORT || 8080;
 
 app.get('/ping', (req, res) => {
-    res.send('PONG');
+    res.send('Yes, I am working');
 });
 
 app.use(bodyParser.json());
@@ -22,4 +22,5 @@ app.use('/products', ProductRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`)
+
 })
