@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../utils';
+import { AuthContext } from '../contexts/AuthContext'; 
 
 function Login() {
-
     const [loginInfo, setLoginInfo] = useState({
         email: '',
         password: ''
-    })
+    });
 
+    const { login } = useContext(AuthContext); 
     const navigate = useNavigate();
 
-    const handleChange = (e) => {
+        const handleChange = (e) => {
         const { name, value } = e.target;
         console.log(name, value);
         const copyLoginInfo = { ...loginInfo };
@@ -20,11 +21,12 @@ function Login() {
         setLoginInfo(copyLoginInfo);
     }
 
+
     const handleLogin = async (e) => {
         e.preventDefault();
         const { email, password } = loginInfo;
         if (!email || !password) {
-            return handleError('email and password are required')
+            return handleError('email and password are required');
         }
         try {
             const url = `https://auth-mern-app-backend-23sv.onrender.com/auth/login`;
@@ -38,23 +40,22 @@ function Login() {
             const result = await response.json();
             const { success, message, jwtToken, name, error } = result;
             if (success) {
+                console.log(message,"message")
                 handleSuccess(message);
-                localStorage.setItem('token', jwtToken);
-                localStorage.setItem('loggedInUser', name);
+                login(jwtToken, name);
                 setTimeout(() => {
-                    navigate('/home')
-                }, 1000)
+                    navigate('/home');
+                }, 1000);
             } else if (error) {
                 const details = error?.details[0].message;
                 handleError(details);
             } else if (!success) {
                 handleError(message);
             }
-            console.log(result);
         } catch (err) {
             handleError(err);
         }
-    }
+    };
 
     return (
         <div className='container'>
@@ -87,8 +88,7 @@ function Login() {
             </form>
             <ToastContainer />
         </div>
-    )
+    );
 }
 
-
-export default Login
+export default Login;

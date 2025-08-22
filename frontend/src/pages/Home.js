@@ -1,44 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleError, handleSuccess } from '../utils';
 import { ToastContainer } from 'react-toastify';
+import { AuthContext } from '../contexts/AuthContext'; 
 
 function Home() {
-    const [loggedInUser, setLoggedInUser] = useState('');
+    const { loggedInUser, logout } = useContext(AuthContext); 
     const [products, setProducts] = useState('');
     const navigate = useNavigate();
-    useEffect(() => {
-        setLoggedInUser(localStorage.getItem('loggedInUser'))
-    }, [])
 
-    const handleLogout = (e) => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('loggedInUser');
+    const handleLogout = () => {
+        logout(); 
         handleSuccess('User Loggedout');
         setTimeout(() => {
             navigate('/login');
-        }, 1000)
-    }
+        }, 1000);
+    };
 
     const fetchProducts = async () => {
         try {
             const url = "https://auth-mern-app-backend-23sv.onrender.com/products";
+            const token = localStorage.getItem('token');
             const headers = {
                 headers: {
-                    'Authorization': localStorage.getItem('token')
+                    'Authorization': token
                 }
-            }
+            };
             const response = await fetch(url, headers);
             const result = await response.json();
-            console.log(result);
             setProducts(result);
         } catch (err) {
             handleError(err);
         }
-    }
+    };
+
     useEffect(() => {
-        fetchProducts()
-    }, [])
+        fetchProducts();
+    }, []);
 
     return (
         <div>
@@ -55,8 +53,7 @@ function Home() {
             </div>
             <ToastContainer />
         </div>
-    )
+    );
 }
 
-
-export default Home
+export default Home;
