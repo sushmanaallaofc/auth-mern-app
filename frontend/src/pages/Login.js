@@ -15,7 +15,6 @@ function Login() {
 
         const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
         const copyLoginInfo = { ...loginInfo };
         copyLoginInfo[name] = value;
         setLoginInfo(copyLoginInfo);
@@ -40,7 +39,6 @@ function Login() {
             const result = await response.json();
             const { success, message, jwtToken, name, error } = result;
             if (success) {
-                console.log(message,"message")
                 handleSuccess(message);
                 login(jwtToken, name);
                 setTimeout(() => {
@@ -90,5 +88,6 @@ function Login() {
         </div>
     );
 }
+
 
 export default Login;
